@@ -6,8 +6,8 @@ extern "C" {
 }
 
 struct ReportMessage {
-	float targetBrightness;
-	float transitionDuration;
+	float targetBrightness = -1;
+	float transitionDuration = -1;
 };
 
 unsigned long currentMillis = 0, transitionStartMillis = 0, transitionEndMillis = 0;
@@ -37,7 +37,7 @@ void setup()
 
 	// Notify that the ring is running
 	for(int i = 0; i < 2; i++) {
-		analogWrite(0, 64);
+		analogWrite(0, 16);
     digitalWrite(1, HIGH);
 		delay(500);
 		analogWrite(0, 0);
@@ -59,7 +59,7 @@ void loop()
 	else
 		currentBrightness = transitionEndBrightness;
 
-	analogWrite(0, int(currentBrightness * 255));
+	analogWrite(0, int(ceil(pow(currentBrightness, 2) * 255)));
 }
 
 usbMsgLen_t usbFunctionSetup(uchar data[8])
@@ -90,7 +90,7 @@ uint8_t usbFunctionWrite(uint8_t *data, uint8_t len)
 	transitionEndMillis = currentMillis + static_cast<unsigned long>(msg.transitionDuration * 1000);
 	transitionEndBrightness = msg.targetBrightness;
 
- ledState ^= 1;
+ 	ledState ^= 1;
 
 	// We've received all data, thanks
 	return 1;
@@ -102,8 +102,8 @@ PROGMEM const char usbHidReportDescriptor[22] = {
 		0xa1, 0x01,				// COLLECTION (Application)
 		0x15, 0x00,				//   LOGICAL_MINIMUM (0)
 		0x26, 0xff, 0x00, //   LOGICAL_MAXIMUM (255)
-		0x75, 0x08,				//   REPORT_SIZE (8)
-		0x95, 0x04,				//   REPORT_COUNT (1)
+		0x75, 0x08,				//   REPORT_SIZE (8 bits)
+		0x95, 0x08,				//   REPORT_COUNT (8)
 		0x09, 0x00,				//   USAGE (Undefined)
 		0xb2, 0x02, 0x01, //   FEATURE (Data,Var,Abs,Buf)
 		0xc0							// END_COLLECTION
