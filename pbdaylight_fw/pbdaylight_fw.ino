@@ -59,7 +59,7 @@ void loop()
 	else
 		currentBrightness = transitionEndBrightness;
 
-	analogWrite(0, int(ceil(pow(currentBrightness, 2) * 255)));
+	analogWrite(0, int(ceil(pow(currentBrightness, 1.5) * 255)));
 }
 
 usbMsgLen_t usbFunctionSetup(uchar data[8])
