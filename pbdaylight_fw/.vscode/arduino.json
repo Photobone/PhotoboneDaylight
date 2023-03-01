@@ -1,0 +1,6 @@
+{
+    "board": "digistump:avr:digispark-tiny",
+    "sketch": "pbring_v2_usb.ino",
+    "programmer": "digistump:micronucleusprog",
+    "port": "COM1"
+}
