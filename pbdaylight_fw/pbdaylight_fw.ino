@@ -53,7 +53,9 @@ void loop()
 	usbPoll();
 
 	if(currentMillis <= transitionEndMillis) {
-		const float t = float(currentMillis - transitionStartMillis) / float(transitionEndMillis - transitionStartMillis);
+		float t = float(currentMillis - transitionStartMillis) / float(transitionEndMillis - transitionStartMillis);
+		t = t * t * (3.0f - 2.0f * t);
+
 		currentBrightness = transitionStartBrightness * (1 - t) + transitionEndBrightness * t;
 	}
 	else
