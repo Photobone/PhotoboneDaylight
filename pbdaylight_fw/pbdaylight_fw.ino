@@ -61,7 +61,8 @@ void loop()
 	else
 		currentBrightness = transitionEndBrightness;
 
-	analogWrite(0, int(ceil(pow(currentBrightness, 1.5) * 255)));
+  const int targetBrightness = int(ceil(pow(currentBrightness, 1.5) * 255));
+	analogWrite(0, targetBrightness > 1 ? targetBrightness : 0);
 }
 
 usbMsgLen_t usbFunctionSetup(uchar data[8])
