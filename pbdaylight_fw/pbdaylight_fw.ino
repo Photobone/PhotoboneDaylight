@@ -86,13 +86,17 @@ uint8_t usbFunctionWrite(uint8_t *data, uint8_t len)
 
 	const ReportMessage &msg = *reinterpret_cast<ReportMessage*>(data);
 
-	transitionStartBrightness = currentBrightness;
-	transitionStartMillis = currentMillis;
+	// Below zero -> heartbeat message
+	if(msg.targetBrightness >= 0) {
+		transitionStartBrightness = currentBrightness;
+		transitionStartMillis = currentMillis;
 
-	transitionEndMillis = currentMillis + static_cast<unsigned long>(msg.transitionDuration * 1000);
-	transitionEndBrightness = msg.targetBrightness;
+		transitionEndMillis = currentMillis + static_cast<unsigned long>(msg.transitionDuration * 1000);
+		transitionEndBrightness = msg.targetBrightness;
+	}
 
  	ledState ^= 1;
+	digitalWrite(1, ledState);
 
 	// We've received all data, thanks
 	return 1;
